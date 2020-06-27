@@ -6,11 +6,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionElement = document.getElementById('question')
     const answerButtonsElement = document.getElementById('answer-buttons')
     const startBtn = document.querySelector('#start-btn')
+    let myVar;
     let timeLeft = 30
     let shuffledQuestions, currentQuestionIndex
+    let gameScore = 0;
+
     // const countdownEl = document.getElementById('countdown');
 
-    startButton.addEventListener('click', startGame)
+    startButton.addEventListener('click', function(){
+         startGame();
+    })
     
     // startButton.addEventListener('click', updateCountdown)
     nextButton.addEventListener('click', () => {
@@ -19,16 +24,22 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     function updateCountdown() {
-        setInterval(function () {
-            if (timeLeft <= 0) {
-                clearInterval(timeLeft = 0)
+         myVar = setInterval(changeClock, 1000) 
+        function changeClock() {
+            if (timeLeft <= -1) {
+                timeLeft = 5;
+                return clearInterval(myVar) 
             }
             console.log(timeLeft);
             timeLeftDisplay.innerHTML = timeLeft
             timeLeft -=1
-        }, 1000)
+        }
     }
+
+    
+    
     startBtn.addEventListener('click', updateCountdown)
+
     
 
     function startGame() {
@@ -89,8 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
         clearStatusClass(element)
         if (correct) {
             element.classList.add('correct')
+            gameScore++;
+            console.log("score is " + gameScore);
         } else {
             element.classList.add('wrong')
+            // debugger;
         }
     }
 
