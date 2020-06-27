@@ -3,14 +3,42 @@ const nextButton = document.getElementById('next-btn')
 const questionContainerElement = document.getElementById('question-container')
 const questionElement = document.getElementById('question')
 const answerButtonsElement = document.getElementById('answer-buttons')
+const startingMinutes = 2;
+let time = startingMinutes * 60;
+// const timeLeftDisplay = document.getElementById('#time-left')
+// let timeLeft = 120;
 
 let shuffledQuestions, currentQuestionIndex
 
+const countdownEl = document.getElementById('countdown');
+setInterval(updateCountdown, 1000);
+
 startButton.addEventListener('click', startGame)
+startButton.addEventListener('click', updateCountdown)
 nextButton.addEventListener('click', () => {
     currentQuestionIndex++
     setNextQuestion()
 })
+
+function updateCountdown() {
+    // setInterval(function(){
+    //     if (timeLeft <= 0) {
+    //         clearInterval(timeLeft = 0)
+    //     }
+    //     timeLeftDisplay.innerHTML = timeLeft;
+    //     timeLeft -=1
+    // }, 1000)
+    const minutes = Math.floor(time / 60);
+    let seconds = time % 60;
+
+    seconds = seconds < 10 ? '0' + seconds : seconds;
+
+    countdownEl.innerHTML = `${minutes}:${seconds}`;
+    time--;
+    if (time <= 0) {
+        clearInterval(time = 0)
+    }
+}
 
 function startGame() {
     console.log('started')
@@ -19,6 +47,7 @@ function startGame() {
     currentQuestionIndex = 0
     questionContainerElement.classList.remove('hide')
     setNextQuestion()
+    
 }
 
 function setNextQuestion() {

@@ -9,6 +9,16 @@
 
 }
 
+#countdown {
+    background-color: cornsilk;
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    font-size: 30px;
+    padding: 5px;
+    border-radius: 5px;
+}
+
 body {
     --hue: var(--hue-neutral);
     padding: 0;
