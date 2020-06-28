@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const questionElement = document.getElementById('question')
     const answerButtonsElement = document.getElementById('answer-buttons')
     const startBtn = document.querySelector('#start-btn')
+    const scoreDisplay = document.querySelector('#score-left')
+    const correctAnswer = 1
     let myVar;
     let timeLeft = 30
     let shuffledQuestions, currentQuestionIndex
     let gameScore = 0;
-
-    // const countdownEl = document.getElementById('countdown');
 
     startButton.addEventListener('click', function(){
          startGame();
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
          myVar = setInterval(changeClock, 1000) 
         function changeClock() {
             if (timeLeft <= -1) {
-                timeLeft = 5;
+                timeLeft = 30;
                 return clearInterval(myVar) 
             }
             console.log(timeLeft);
@@ -36,11 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    
-    
     startBtn.addEventListener('click', updateCountdown)
-
-    
 
     function startGame() {
         console.log('started')
@@ -49,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentQuestionIndex = 0
         questionContainerElement.classList.remove('hide')
         setNextQuestion()
-
     }
 
     function setNextQuestion() {
@@ -65,9 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('btn')
             if (answer.correct) {
                 button.dataset.correct = answer.correct
-            }
+                // scoreDisplay.innerHTML = gameScore;
+            } 
             button.addEventListener('click', selectAnswer)
             answerButtonsElement.appendChild(button)
+            
         })
     }
 
@@ -77,38 +74,77 @@ document.addEventListener('DOMContentLoaded', () => {
         while (answerButtonsElement.firstChild) {
             answerButtonsElement.removeChild(answerButtonsElement.firstChild)
         }
-
     }
 
     function selectAnswer(e) {
         const selectedButton = e.target
         const correct = selectedButton.dataset.correct
         setStatusClass(document.body, correct)
+        
         Array.from(answerButtonsElement.children).forEach(button => {
             setStatusClass(button, button.dataset.correct)
+            
         })
         if (shuffledQuestions.length > currentQuestionIndex + 1) {
             nextButton.classList.remove('hide')
+            
         } else {
             startButton.innerText = 'Restart'
             startButton.classList.remove('hide')
         }
-
+        setScore()
+            // gameScore++;
+            // scoreDisplay.innerHTML = gameScore;
+            // console.log("here " + gameScore);
     }
 
     function setStatusClass(element, correct) {
+        // debugger;
         clearStatusClass(element)
         if (correct) {
             element.classList.add('correct')
-            gameScore++;
-            console.log("score is " + gameScore);
+            
         } else {
             element.classList.add('wrong')
-            // debugger;
-        }
+        } 
+    } 
+    // function setScore(element, correct, wrong) {
+    //     if (element === correct) {
+    //         gameScore++;
+    //         console.log("Your score is " + gameScore);
+    //         scoreDisplay.innerHTML = gameScore
+    //     } else (element === wrong) 
+    //        console.log(gameScore + 'wrong');     
+    //     }  
+    //     if (answer == correct) {
+    //     gameScore++;
+    //     // scoreDisplay.innerHTML = scoreDisplay
+    //     console.log("score is " + gameScore);
+    //     scoreDisplay.innerHTML = gameScore;
+    //     } 
+    
+    //     else (answer === wrong) 
+    //         timeLeft -5
+    //         console.log("time minus one");
+    //     }
+    function setScore(element, correct) {
+        // debugger;
+        
+        if (element === correct) {
+            gameScore++;
+            console.log("score is " + gameScore);
+            scoreDisplay.innerHTML = gameScore;
+        } 
+        // else {
+        //     timeLeft -5
+        //     console.log("time minus one");
+        // }
     }
 
+    // function checkAnswer(answer)
+
     function clearStatusClass(element) {
+        // setScore()
         element.classList.remove('correct')
         element.classList.remove('wrong')
     }
@@ -145,8 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
             question: 'Is learning code easy?',
             answers: [
                 { text: 'super easy', correct: false },
-                { text: 'no', correct: true },
-                { text: 'hell no', correct: true },
+                { text: 'Yes of course', correct: false },
+                { text: 'i know everything in 3 weeks', correct: false },
                 { text: 'its hard AF', correct: true },
             ]
         },
@@ -160,9 +196,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
     ]
+
+
 })
-
-
 
 
 // //  Working countdown function
