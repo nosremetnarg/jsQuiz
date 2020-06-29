@@ -21,11 +21,14 @@
 #score {
     background-color: cornsilk;
     position: absolute;
-    top: 45px;
+    top: 65px;
     left: 16px;
     font-size: 20px;
     padding: 5px;
     border-radius: 5px;
+}
+#score:hover {
+    cursor: -webkit-grab; cursor: grab;
 }
 
 body {

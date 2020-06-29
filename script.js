@@ -1,56 +1,66 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const timeLeftDisplay = document.querySelector('#time-left')
-    const startButton = document.getElementById('start-btn')
-    const nextButton = document.getElementById('next-btn')
-    const questionContainerElement = document.getElementById('question-container')
-    const questionElement = document.getElementById('question')
-    const answerButtonsElement = document.getElementById('answer-buttons')
-    const startBtn = document.querySelector('#start-btn')
-    const scoreDisplay = document.querySelector('#score-left')
-    const correctAnswer = 1
-    let myVar;
-    let timeLeft = 30
+const startBtn = document.querySelector('#start-btn')
+const startButton = document.getElementById('start-btn')
+const timeLeftDisplay = document.querySelector("#time-left")
+const questionContainerElement = document.getElementById('question-container')
+const questionElement = document.getElementById('question')
+const answerButtonsElement = document.getElementById('answer-buttons')
+const initialBtn = document.querySelector("#initials-btn")
+const initialInput = document.querySelector("#initial-input")
+const initialEl = document.getElementById("initials")
+const scoreDisplay = document.getElementById("high-scores")
+const highScores = []
+const answerStatusEl = document.getElementById("answer-status")
+var selectAnswerTimeout = null
+let timeLeft = 30;
+let score = 0;
     let shuffledQuestions, currentQuestionIndex
-    let gameScore = 0;
-
-    startButton.addEventListener('click', function(){
-         startGame();
-    })
-    
-    // startButton.addEventListener('click', updateCountdown)
-    nextButton.addEventListener('click', () => {
-        currentQuestionIndex++
-        setNextQuestion()
-    })
-
-    function updateCountdown() {
-         myVar = setInterval(changeClock, 1000) 
-        function changeClock() {
-            if (timeLeft <= -1) {
-                timeLeft = 30;
-                return clearInterval(myVar) 
-            }
-            console.log(timeLeft);
-            timeLeftDisplay.innerHTML = timeLeft
-            timeLeft -=1
-        }
+    //restart Quiz
+function resetState() {
+    timeLeftDisplay.innerHTML = 30
+    timeLeft = 30
+    startTimer()
+    score = 0
+    initialInput.value = ""
+    initialBtn.setAttribute("disabled", true)
+};
+//start Quiz
+function startQuiz() {
+    resetState()
+    startButton.classList.add("hide")
+    scoreDisplay.classList.add("hide")
+    questionContainerElement.classList.remove("hide")
+    shuffledQuestions = questions.sort(() => Math.random() - .5)
+    currentQuestionIndex = 0
+        questionContainerElement.classList.remove("hide")
+        setNextQuestion();
+    };
+    // timer variables
+    var myTimer = null
+    var timer = function(){
+        if(timeLeft <= 0) {
+            stopTimer();
+            enterInitials();
     }
-
-    startBtn.addEventListener('click', updateCountdown)
-
-    function startGame() {
-        console.log('started')
-        startButton.classList.add('hide')
-        shuffledQuestions = questions.sort(() => Math.random() - .5)
-        currentQuestionIndex = 0
-        questionContainerElement.classList.remove('hide')
-        setNextQuestion()
-    }
-
+    const time = --timeLeft
+    timeLeftDisplay.innerHTML = time < 0 ? 0 : timeLeft
+    };
+//timer function
+function startTimer() {
+     myTimer = setInterval(timer, 1000)
+};
+function stopTimer() {
+   if (myTimer) {clearInterval(myTimer)}
+   timeLeftDisplay.innerHTML = timeLeft < 0 ? 0 : timeLeft
+};
+//function to begin next question
     function setNextQuestion() {
-        resetState()
+         //change
+        while(answerButtonsElement.firstChild) {
+            answerButtonsElement.removeChild
+            (answerButtonsElement.firstChild)
+        }
         showQuestion(shuffledQuestions[currentQuestionIndex])
-    }
+    };
 
     function showQuestion(question) {
         questionElement.innerText = question.question
@@ -60,94 +70,74 @@ document.addEventListener('DOMContentLoaded', () => {
             button.classList.add('btn')
             if (answer.correct) {
                 button.dataset.correct = answer.correct
+                // gameScore
+                // console.log("Your score is " + gameScore);
+                // scoreDisplay.innerHTML = gameScore
                 // scoreDisplay.innerHTML = gameScore;
             } 
             button.addEventListener('click', selectAnswer)
             answerButtonsElement.appendChild(button)
-            
         })
-    }
-
-    function resetState() {
-        clearStatusClass(document.body)
-        nextButton.classList.add('hide')
-        while (answerButtonsElement.firstChild) {
-            answerButtonsElement.removeChild(answerButtonsElement.firstChild)
-        }
-    }
+    };
 
     function selectAnswer(e) {
         const selectedButton = e.target
         const correct = selectedButton.dataset.correct
-        setStatusClass(document.body, correct)
-        
-        Array.from(answerButtonsElement.children).forEach(button => {
-            setStatusClass(button, button.dataset.correct)
-            
-        })
-        if (shuffledQuestions.length > currentQuestionIndex + 1) {
-            nextButton.classList.remove('hide')
-            
+        keepScore(correct)
+    answerStatusEl.innerHTML = correct ? "Correct, one point for you!" : "Wrong, two seconds time deducted!"
+    selectAnswerTimeout = setTimeout(() => {
+    if(shuffledQuestions.length > currentQuestionIndex + 1 ) {
+        currentQuestionIndex++
+            answerStatusEl.innerHTML = ""
+            setNextQuestion()
         } else {
-            startButton.innerText = 'Restart'
-            startButton.classList.remove('hide')
+            stopTimer()
+            enterInitials()
+            answerStatusEl.innerHTML = ""
         }
-        setScore()
-            // gameScore++;
-            // scoreDisplay.innerHTML = gameScore;
-            // console.log("here " + gameScore);
+    }, 1000)
+};
+//user enters initials
+function enterInitials() {
+    initialEl.classList.remove("hide")
+    questionContainerElement.classList.add("hide")
+};
+//ensure initials are entered before saving
+function handleSubmitButtonState() {
+    if (initialInput.value) {
+        initialBtn.removeAttribute("disabled")
+    } else {
+       initialBtn.setAttribute("disabled", true)    
     }
-
-    function setStatusClass(element, correct) {
-        // debugger;
-        clearStatusClass(element)
-        if (correct) {
-            element.classList.add('correct')
-            
+};
+     //scores functions
+ function displayScores() {
+    initialEl.classList.add("hide")
+    scoreDisplay.classList.remove("hide")
+    startButton.innerText = "restart"
+    startButton.classList.remove("hide")
+ };
+function viewHighScores() {
+    stopTimer()
+    clearTimeout(selectAnswerTimeout)
+    questionContainerElement.classList.add("hide")
+    displayScores()
+};
+            function keepScore(isCorrect) {
+                if(isCorrect) {
+                    score++
+            console.log(score);
         } else {
-            element.classList.add('wrong')
-        } 
-    } 
-    // function setScore(element, correct, wrong) {
-    //     if (element === correct) {
-    //         gameScore++;
-    //         console.log("Your score is " + gameScore);
-    //         scoreDisplay.innerHTML = gameScore
-    //     } else (element === wrong) 
-    //        console.log(gameScore + 'wrong');     
-    //     }  
-    //     if (answer == correct) {
-    //     gameScore++;
-    //     // scoreDisplay.innerHTML = scoreDisplay
-    //     console.log("score is " + gameScore);
-    //     scoreDisplay.innerHTML = gameScore;
-    //     } 
-    
-    //     else (answer === wrong) 
-    //         timeLeft -5
-    //         console.log("time minus one");
-    //     }
-    function setScore(element, correct) {
-        // debugger;
-        
-        if (element === correct) {
-            gameScore++;
-            console.log("score is " + gameScore);
-            scoreDisplay.innerHTML = gameScore;
-        } 
-        // else {
-        //     timeLeft -5
-        //     console.log("time minus one");
-        // }
+        timeLeft -=2
+        console.log(timeLeft);
     }
-
-    // function checkAnswer(answer)
-
-    function clearStatusClass(element) {
-        // setScore()
-        element.classList.remove('correct')
-        element.classList.remove('wrong')
-    }
+};
+function saveScore() {
+    var scoreDiv = document.createElement("div")
+    scoreDiv.innerHTML = "<h2>" + initialInput.value + "</h2><div>" + score + "</div"
+    document.getElementById("scoreContainer").append(scoreDiv)
+    displayScores()
+};
 
     const questions = [
         {
@@ -195,28 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 { text: 'YES YES YES', correct: true },
             ]
         },
+        {
+            question: 'Who is the friendly Dinosaur?',
+            answers: [
+                { text: 'Triumph', correct: false },
+                { text: 'Gover', correct: false },
+                { text: 'Smoochy', correct: false },
+                { text: 'Barney', correct: true },
+            ]
+        }
     ]
 
 
-})
-
-
-// //  Working countdown function
-// function updateCountdown() {
-//     // setInterval(function(){
-//     //     if (timeLeft <= 0) {
-//     //         clearInterval(timeLeft = 0)
-//     //     }
-//     //     timeLeftDisplay.innerHTML = timeLeft;
-//     //     timeLeft -=1
-//     // }, 1000)
-//     setInterval(function)
-//     const minutes = Math.floor(time / 60);
-//     let seconds = time % 60;
-//     seconds = seconds < 10 ? '0' + seconds : seconds;
-//     countdownEl.innerHTML = `${minutes}:${seconds}`;
-//     time--;
-//     if (time <= 0) {
-//         clearInterval(time = 0)
-//     }
-// }
+    document.addEventListener('DOMContentLoaded', () => {
+        startButton.addEventListener('click', startQuiz)
+        initialBtn.addEventListener("click", saveScore)
+        initialInput.addEventListener("input", handleSubmitButtonState)
+    })

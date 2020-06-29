@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>jsQuiz</title>
 </head>
 <body>
-    <h3 id="countdown">Seconds left: <span id="time-left">30</span></h3>
-    <h4 id="score">Score: <span id="score-left">0</span></h4>
+    <h3 id="score" onclick="viewHighScores()">View Scores</h3>
+    <h4 id="countdown">Time left: <span id="time-left">30</span></h4>
     <div class="container">
         <div id="question-container" class="hide">
             <div id="question">Question</div>
@@ -18,10 +18,19 @@
                 <button class="btn">Answer 3</button>
                 <button class="btn">Answer 4</button>
             </div>
-        </div>
+        <div id="answer-status" class="answer-status"></div>
+    </div>
+    <div class="hide" id="initials">
+        <h1 class="initial-entry">Enter Initals:</h1>
+        <input id="initial-input" class="initial-text-box" type="text" placeholder="enter initials here"/>
+        <button disabled class="initials-btn btn" id="initials-btn">Save Score</button>
+    </div>
+    <div class="hide high-scores" id="high-scores">
+        <h1 class="score-title">Scores:</h1>
+        <div class="scores" id="scoreContainer"></div>
+    </div>
         <div class="controls">
             <button id="start-btn" class="start-btn btn">Start</button>
-            <button id="next-btn" class="start-btn btn hide">Next</button>
         </div>
     </div>
     <script src="script.js"> </script>
